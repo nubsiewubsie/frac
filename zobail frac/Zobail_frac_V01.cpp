@@ -13,7 +13,6 @@ enum Oper {ADD, SUB, MULT, DIV};
 int deleteExp (int);
 int getExp (int);
 
-
 struct expression {
 	int n, d;
 };
@@ -22,34 +21,48 @@ struct frac {
 	Oper op;
 };
 
-int reduce (int *n, int *d){
-
+void reduce (frac *exp,int position){
 	int r = 0;
-
-	int numerator = *n;
-	int denominator = *d;
+	int numerator = exp[position].f1.n;
+	int denominator = exp[position].f1.d;
 		//printf ("%i, %i",numerator,denominator);
 	 	do
 	    {
-	        r = *n % *d;
+	        r = exp[position].f1.n % exp[position].f1.d;
 	        if(r == 0)
 	            break;
-	        *n = *d;
-	        *d = r;
+	        exp[position].f1.n = exp[position].f1.d;
+	        exp[position].f1.d = r;
 	    }
-   		while(true); //D IS NOW THE GCD
+   		while(true);
    		
-   	*n = numerator/(*d);
-   	*d = denominator/(*d); 		
+   	exp[position].f1.n = numerator/exp[position].f1.d;
+   	exp[position].f1.d = denominator/exp[position].f1.d; 	
+	 
+	r = 0;   
+	numerator = exp[position].f2.n;
+	denominator = exp[position].f2.d;
+		//printf ("%i, %i",numerator,denominator);
+	 	do
+	    {
+	        r = exp[position].f2.n % exp[position].f2.d;
+	        if(r == 0)
+	            break;
+	        exp[position].f2.n = exp[position].f2.d;
+	        exp[position].f2.d = r;
+	    }
+   		while(true); 
+   		
+   	exp[position].f2.n = numerator/exp[position].f2.d;
+   	exp[position].f2.d = denominator/exp[position].f2.d; 
+		
+   	printf ("\n%i/%i %i/%i\n",exp[position].f1.n,exp[position].f1.d,exp[position].f2.n,exp[position].f2.d);
 }
 
 int rb (int min, int max)
 {
 	return rand() % (max - min + 1) + min;
 }
-
-
-
 
 int validateExp (char s[]){ 
     int i = 0;
@@ -116,5 +129,6 @@ int main (){
 	frac exp [NUM_EXPRESSIONS];
 	char string [80] = "(54/12)+(88/12)";
 	parse (string,1,exp);
+	reduce (exp,1);
 	system ("PAUSE");   
 }
