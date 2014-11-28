@@ -4,7 +4,6 @@
 #include <math.h> 
 #include <time.h>
 
-#define GETPARSE "(54/12)+(88/12)"
 #define NUM_EXPRESSIONS 30
 
 
@@ -44,12 +43,14 @@ int validateExp (char s[]){
 
 int walkAdd (char s[], int*i , char end){ //broken
     int n=0;
+    (*i)++;
     for (;s[*i]!=end;(*i)++)
     {   
-        printf ("%i\n",n);
+        printf ("\nn = %i, i = %i, s[i] = %c",n,*i,s[*i]);
         n*=10;
         n+=s[*i] - '0';
     }
+    printf ("\n n = %i",n);
     return n;
 }
 
@@ -57,37 +58,43 @@ int parse (char s[],int position,frac *exp){
     int i =0;
     int j = 0;
     int count = 0;
-  
-    for (i = 0; s[i]; i++){ // PARSES THE NUMERATOR AND STORES IT AS AN INT            
+  	printf ("%s\n",s);
+  	
+    for (i = 0; s[i]; i++){ 
+		
         if (s[i] == '(' && count == 0)
            {exp[position].f1.n = walkAdd (s, &i, '/');
-           count++;}
+           //printf ("\n%i = %i",i,exp[position].f1.n);
+           count++;
+		   }
            
-        else if (s[i] == '/' && count == 1)
+        if (s[i] == '/' && count == 1)
              {exp[position].f1.d = walkAdd (s, &i, ')');
-             count++;}
+             count++;
+			 printf ("count = %i",count);}
              
-        else if (s[i] == ')' && s[i+2]=='(')  
+        if (s[i] == ')' && s[i+2]=='(')  
              {if (s[i] == '+') exp[position].op = ADD;
              if (s[i] == '-') exp[position].op = SUB;
              if (s[i] == '/') exp[position].op = DIV;
-             if (s[i] == '*') exp[position].op = MULT;}
+             if (s[i] == '*') exp[position].op = MULT;
+			 i+=2;}
+			 //printf ("\noperator collected\n i = %i, s[%i] = %c \n count =%i",i,i,s[i],count);}
              
-        else if (s[i] == '(' && count == 2)
-             exp[position].f2.n =  walkAdd (s, &i, '/');
+        if (s[i] == '(' && count == 2)
+             {exp[position].f2.n =  walkAdd (s, &i, '/');
+             count ++;}
              
-        else if (s[i] == '/' && count == 3)
-             {exp[position].f2.d = walkAdd (s, &i,')');
-             count++;}             
+        if (s[i] == '/' && count == 3)
+             exp[position].f2.d = walkAdd (s, &i,')');
+                   
     }
-    printf ("%i/",exp[position].f1.n);
-    printf ("%i",exp[position].f1.d);
-    printf (" %i/",exp[position].f2.n);
-    printf ("%i\n\n",exp[position].f2.d);
+    printf ("\n%i/%i %i/%i\n",exp[position].f1.n,exp[position].f1.d,exp[position].f2.n,exp[position].f2.d);
 }
 
 int main (){
 	frac exp [NUM_EXPRESSIONS];
-	parse (GETPARSE,1,exp);
+	char string [80] = "(54/12)+(88/12)";
+	parse (string,1,exp);
 	system ("PAUSE");   
 }
