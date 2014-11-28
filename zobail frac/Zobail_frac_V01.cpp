@@ -22,6 +22,26 @@ struct frac {
 	Oper op;
 };
 
+int reduce (int *n, int *d){
+
+	int r = 0;
+
+	int numerator = *n;
+	int denominator = *d;
+		//printf ("%i, %i",numerator,denominator);
+	 	do
+	    {
+	        r = *n % *d;
+	        if(r == 0)
+	            break;
+	        *n = *d;
+	        *d = r;
+	    }
+   		while(true); //D IS NOW THE GCD
+   		
+   	*n = numerator/(*d);
+   	*d = denominator/(*d); 		
+}
 
 int rb (int min, int max)
 {
