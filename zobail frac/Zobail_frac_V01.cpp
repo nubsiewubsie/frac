@@ -3,50 +3,46 @@
 #include <string.h>
 #include <math.h> 
 #include <time.h>
+
 #define GETPARSE "(54/12)+(88/12)"
+#define NUM_EXPRESSIONS 30
+
 
 
 enum Oper {ADD, SUB, MULT, DIV};
 
-int getParse (char);
+int deleteExp (int);
+int getExp (int);
 
+
+struct expression {
+	int n, d;
+};
+struct frac {
+	expression f1, f2;
+	Oper op;
+};
 
 
 int rb (int min, int max)
 {
-  return rand() % (max - min + 1) + min;
+	return rand() % (max - min + 1) + min;
 }
 
 
-int valid (char *s){
+
+
+int validateExp (char s[]){ 
     int i = 0;
     int j = 0;
-    
     for (i = 0; s[i]; i++){
-        
         if (s[i] == '(' && s[i+1] == '/') return 0;
         if (s[i] == '/' && s[i+1] == ')') return 0;
         if (s[i] == ')' && s[i+1] == '(') return 0;
     }
-    
-    
 }
 
-
-
-struct frac {
-       int n, d;
-};
-
-
-struct fracEq {
-     frac f1, f2;
-     //char oper;
-     Oper op;
-};
-
-
-int walkAdd (char *s, int*i , char end){ //WHERE I IS INDEX OF FIRST VALID ELEMENT
+int walkAdd (char s[], int*i , char end){ //broken
     int n=0;
     for (;s[*i]!=end;(*i)++)
     {   
@@ -57,51 +53,41 @@ int walkAdd (char *s, int*i , char end){ //WHERE I IS INDEX OF FIRST VALID ELEME
     return n;
 }
 
-int parse (char *s){
+int parse (char s[],int position,frac *exp){
     int i =0;
     int j = 0;
     int count = 0;
-    fracEq eq1;
-    Oper operand;
   
     for (i = 0; s[i]; i++){ // PARSES THE NUMERATOR AND STORES IT AS AN INT            
         if (s[i] == '(' && count == 0)
-           {eq1.f1.n = walkAdd (s, &i, '/');
+           {exp[position].f1.n = walkAdd (s, &i, '/');
            count++;}
            
         else if (s[i] == '/' && count == 1)
-             {eq1.f1.d = walkAdd (s, &i, ')');
+             {exp[position].f1.d = walkAdd (s, &i, ')');
              count++;}
              
         else if (s[i] == ')' && s[i+2]=='(')  
-             {if (s[i] == '+') operand = ADD;
-             if (s[i] == '-') operand = SUB;
-             if (s[i] == '/') operand = DIV;
-             if (s[i] == '*') operand = MULT;}
+             {if (s[i] == '+') exp[position].op = ADD;
+             if (s[i] == '-') exp[position].op = SUB;
+             if (s[i] == '/') exp[position].op = DIV;
+             if (s[i] == '*') exp[position].op = MULT;}
              
-        else if (s[i] == '/' && count == 2)
-             {eq1.f2.d = walkAdd (s, &i,')');
-             count++;}
+        else if (s[i] == '(' && count == 2)
+             exp[position].f2.n =  walkAdd (s, &i, '/');
              
-        else if (s[i] == '(' && count == 4)
-             eq1.f2.n =  walkAdd (s, &i, '/');
-
+        else if (s[i] == '/' && count == 3)
+             {exp[position].f2.d = walkAdd (s, &i,')');
+             count++;}             
     }
-          
-    printf ("%i/",eq1.f1.n);
-    printf ("%i",eq1.f1.d);
-    //printf ("%c",eq1.oper);
-    printf (" %i/",eq1.f2.n);
-    printf ("%i\n\n",eq1.f2.d);
-          
-//------------------------------------------------------------------------------------------------------------------------------ 
+    printf ("%i/",exp[position].f1.n);
+    printf ("%i",exp[position].f1.d);
+    printf (" %i/",exp[position].f2.n);
+    printf ("%i\n\n",exp[position].f2.d);
 }
 
 int main (){
-//char s[80];
-parse (GETPARSE);
-
-
- 
- system ("PAUSE");   
+	frac exp [NUM_EXPRESSIONS];
+	parse (GETPARSE,1,exp);
+	system ("PAUSE");   
 }
