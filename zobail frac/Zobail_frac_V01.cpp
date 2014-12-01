@@ -6,38 +6,30 @@
 
 #define NUM_EXPRESSIONS 30
 
+
+
 enum Oper {ADD, SUB, MULT, DIV};
 
 int deleteExp (int);
 int getExp (int);
 
 struct expression {
-	int n, d, value;};
+	int n, d, value;
+};
 struct frac {
 	expression f1, f2;
-	Oper op;};
+	Oper op;
+};
+
 
 void deleteFrac (frac *a, int deletePosition, int n){
+	
 	int i = 0;
-	for (i = deletePosition; i < n+1; i++)a[i] = a[i+1];}
-
-void ranFrac (frac *a, int n){
-     srand((unsigned)time(NULL));   // seeds random # generator  
-     int i = n;
-     int temp = 0;     
-     temp = rb (0,3);
-     if (temp == 0) a[i].op = ADD;
-     else if (temp == 1) a[i].op = SUB;
-     else if (temp == 2) a[i].op = DIV;
-     else if (temp == 3) a[i].op = MULT;
-     
-     a[i].f1.n = rb (-99, 99);
-     a[i].f1.d = rb (MIN_NUM, MAX_NUM);
-     a[i].f2.n = rb (MIN_NUM, MAX_NUM);
-     a[i].f2.d = rb (MIN_NUM, MAX_NUM);
-     
-     //printf ("\n random fraction is:  %i/%i %c %i/%i  \n",a[i].f1.n, a[i].f1.d, a[i].op, a[i].f1.n,a[i].f1.d);
+	
+	for (i = deletePosition; i < n+1; i++)a[i] = a[i+1];
+		
 }
+
 
 void reduce (frac *exp,int position){
 	int r = 0;
@@ -45,6 +37,7 @@ void reduce (frac *exp,int position){
 	int *p = &position;
 	int numerator = c[*p].f1.n;
 	int denominator = c[*p].f1.d;
+		//printf ("%i, %i",numerator,denominator);
 	 	do
 	    {
 	        r = c[*p].f1.n % c[*p].f1.d;
@@ -52,7 +45,8 @@ void reduce (frac *exp,int position){
 	            break;
 	        c[*p].f1.n = c[*p].f1.d;
 	        c[*p].f1.d = r;
-	    }while(true);
+	    }
+   		while(true);
    		
    	c[*p].f1.n = numerator/c[*p].f1.d;
    	c[*p].f1.d = denominator/c[*p].f1.d; 	
@@ -60,6 +54,7 @@ void reduce (frac *exp,int position){
 	r = 0;   
 	numerator = c[*p].f2.n;
 	denominator = c[*p].f2.d;
+		//printf ("%i, %i",numerator,denominator);
 	 	do
 	    {
 	        r = c[*p].f2.n % c[*p].f2.d;
@@ -194,7 +189,7 @@ int main (){
 			break ;
 		case 'h' :
 			printf ("Displaying expressions");
-			break; 
+			break;
 		default :
 			printf ("Incorrect input\n");
 			printf ("Fraction program\nChoose an operation\na - exit\t\tb - sort by value\nc - sort by operator\td - sort by answer\n");
