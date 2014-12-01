@@ -14,7 +14,7 @@ int deleteExp (int);
 int getExp (int);
 
 struct expression {
-	int n, d;
+	int n, d, value;
 };
 struct frac {
 	expression f1, f2;
@@ -74,25 +74,35 @@ int rb (int min, int max)
 	return rand() % (max - min + 1) + min;
 }
 
-int validateExp (char s[]){ 
+/*int validateExp (char s[]){ 
     int i = 0;
     int j = 0;
     for (i = 0; s[i]; i++){
         if (s[i] == '(' && s[i+1] == '/') return 0;
         if (s[i] == '/' && s[i+1] == ')') return 0;
         if (s[i] == ')' && s[i+1] == '(') return 0;
-    }
-}
-
+    }*/
+ 
 int walkAdd (char s[], int*i , char end){ //broken
     int n=0;
+    int neg = 0;
     (*i)++;
     for (;s[*i]!=end;(*i)++)
     {   
+    	if (s[*i]=='-')
+    	{
+			neg = 1;
+			(*i)++;
+		}
         printf ("\nn = %i, i = %i, s[i] = %c",n,*i,s[*i]);
         n*=10;
         n+=s[*i] - '0';
     }
+    if (neg == 1)
+    {
+    	printf ("hi");
+    	n*=-1;    	
+	}
     printf ("\n n = %i",n);
     return n;
 }
@@ -106,38 +116,38 @@ int parse (char s[],int position,frac *exp){
     for (i = 0; s[i]; i++){ 
 		
         if (s[i] == '(' && count == 0)
-           {exp[position].f1.n = walkAdd (s, &i, '/');
-           //printf ("\n%i = %i",i,exp[position].f1.n);
-           count++;
-		   }
-           
+        	{exp[position].f1.n = walkAdd (s, &i, '/');
+        	count++;}
         if (s[i] == '/' && count == 1)
              {exp[position].f1.d = walkAdd (s, &i, ')');
-             count++;
-			 printf ("count = %i",count);}
-             
+             count++;}
         if (s[i] == ')' && s[i+2]=='(')  
              {if (s[i] == '+') exp[position].op = ADD;
              if (s[i] == '-') exp[position].op = SUB;
              if (s[i] == '/') exp[position].op = DIV;
              if (s[i] == '*') exp[position].op = MULT;
-			 i+=2;}
-			 //printf ("\noperator collected\n i = %i, s[%i] = %c \n count =%i",i,i,s[i],count);}
-             
+			 i+=2;}             
         if (s[i] == '(' && count == 2)
              {exp[position].f2.n =  walkAdd (s, &i, '/');
-             count ++;}
-             
+             count ++;}             
         if (s[i] == '/' && count == 3)
              exp[position].f2.d = walkAdd (s, &i,')');
-                   
     }
     printf ("\n%i/%i %i/%i\n",exp[position].f1.n,exp[position].f1.d,exp[position].f2.n,exp[position].f2.d);
 }
 
+void sortVal (int numExp, frac * exp){
+	int i;
+	for (i=numExp;i>numExp;i++)
+	{
+		reduce (exp,i);
+	}
+}
+
 int main (){
 	frac exp [NUM_EXPRESSIONS];
-	char string [80] = "(54/12)+(88/12)";
+	int numExp =1;
+	char string [80] = "(54/-54)+(88/-1)";
 	parse (string,1,exp);
 	reduce (exp,1);
 	system ("PAUSE");   
