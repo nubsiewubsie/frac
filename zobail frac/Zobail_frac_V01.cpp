@@ -21,6 +21,16 @@ struct frac {
 	Oper op;
 };
 
+
+void deleteFrac (frac *a, int deletePosition, int n){
+	
+	int i = 0;
+	
+	for (i = deletePosition; i < n+1; i++)a[i] = a[i+1];
+		
+}
+
+
 void reduce (frac *exp,int position){
 	int r = 0;
 	int numerator = exp[position].f1.n;
